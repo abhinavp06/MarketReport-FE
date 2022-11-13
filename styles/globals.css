@@ -15,6 +15,20 @@ a {
   box-sizing: border-box;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
