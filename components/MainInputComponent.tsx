@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { ReportProcessingResponse } from '../models/ReportProcessingResponse';
 import { callReportHistoryApi } from '../api/ReportHistoryAPI';
 
