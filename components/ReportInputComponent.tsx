@@ -2,7 +2,6 @@
 // @ts-nocheck
 
 import React, { useEffect, useState, useRef } from 'react';
-import { AxiosResponse } from 'axios';
 import { ReportProcessingResponse } from '../models/ReportProcessingResponse';
 import { callReportHistoryApi } from '../api/ReportHistoryAPI';
 
@@ -22,14 +21,11 @@ export default function ReportInputComponent() {
       formData.append('email', email);
       formData.append('file', file.files[0], file.files[0].name);
 
-      console.log('form data: ', formData);
-      const axiosResult: AxiosResponse<ReportProcessingResponse> =
+      const axiosResult: ReportProcessingResponse =
         await callReportHistoryApi(formData);
-      setRes(axiosResult.data);
-    } catch (error: any) {
-      console.log('ERROR: ', error);
-    } finally {
-      console.log('HEREEE');
+      setRes(axiosResult);
+
+    }finally {
       setLoading(false);
       setEmail('');
       e.target.reset();

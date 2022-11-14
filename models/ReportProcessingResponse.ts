@@ -1,4 +1,4 @@
-import { ReportStringEnum } from "./ReportStringEnum";
+import { ReportStringEnum } from './ReportStringEnum';
 
 export interface ReportProcessingResponse {
   reportString: ReportStringEnum;

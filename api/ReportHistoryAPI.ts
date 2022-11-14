@@ -1,17 +1,20 @@
-export const callReportHistoryApi = async (data: any): Promise<any> => {
+import { ReportProcessingResponse } from '../models/ReportProcessingResponse';
+
+export const callReportHistoryApi = async (
+  data: any,
+): Promise<ReportProcessingResponse> => {
   const requestOptions: any = {
     method: 'POST',
     body: data,
     redirect: 'follow',
   };
 
-  return fetch(
+  const response: any = await fetch(
     `${process.env.NEXT_PUBLIC_marketReportGeneratorBaseLink?.concat(
       `report/history`,
     )}`,
     requestOptions,
-  )
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.log('error', error));
+  );
+
+  return response.json();
 };
