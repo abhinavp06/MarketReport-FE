@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 import React, { useEffect, useState, useRef } from 'react';
 import { AxiosResponse } from 'axios';
 import { ReportProcessingResponse } from '../models/ReportProcessingResponse';
