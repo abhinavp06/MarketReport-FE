@@ -1,40 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AxiosResponse } from 'axios';
 import { ReportProcessingResponse } from '../models/ReportProcessingResponse';
 import { callReportHistoryApi } from '../api/ReportHistoryAPI';
-import { ReportInput } from '../models/RepotInput';
 
 export default function ReportInputComponent() {
   const [res, setRes] = useState<ReportProcessingResponse>();
   const [email, setEmail] = useState<string>('');
-  const [comparisonDifference, setComparisonDifference] = useState<number>(1);
-  const [file, setFile] = useState<any>();
+  const [comparisonDifference, setComparisonDifference] = useState<string>('1');
+  const fileRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const data: ReportInput = {
-        comparisonDifference: comparisonDifference,
-        email: email,
-        file: undefined,
-      };
+      const formData: FormData = new FormData();
+      formData.append('comparisonDifference', comparisonDifference);
+      formData.append('email', email);
+      formData.append('file', file.files[0], file.files[0].name);
+
+      console.log('form data: ', formData);
       const axiosResult: AxiosResponse<ReportProcessingResponse> =
-        await callReportHistoryApi(data);
+        await callReportHistoryApi(formData);
       setRes(axiosResult.data);
     } catch (error: any) {
-      console.log('ERROR: ', error.response.data);
-      setRes(error.response.data);
+      console.log('ERROR: ', error);
+    } finally {
+      console.log('HEREEE');
+      setLoading(false);
+      setEmail('');
+      e.target.reset();
     }
   };
+  function checkDisabled() {
+    const shouldBeDisabled = email.length == 0 || !fileRef.current.value;
+    setLoading(shouldBeDisabled);
+  }
+  useEffect(() => {
+    checkDisabled();
+  }, [email]);
 
   return (
     <div>
-      <form encType="multipart/form-data">
+      <form encType="multipart/form-data" onSubmit={submitHandler}>
         <label htmlFor="email">Email</label>
         <input
           type="email"
           id="email"
           name="email"
+          value={email}
           required
           minLength={10}
           onChange={(e) => setEmail(e.target.value)}
@@ -44,8 +58,9 @@ export default function ReportInputComponent() {
         <input
           type="number"
           id="comparisonDifference"
+          value={comparisonDifference}
           name="comparisonDifference"
-          onChange={(e) => setComparisonDifference(+e.target.value)}
+          onChange={(e) => setComparisonDifference(e.target.value)}
         />
         <br />
         <label htmlFor="file">File</label>
@@ -53,12 +68,16 @@ export default function ReportInputComponent() {
           type="file"
           id="file"
           name="file"
+          ref={fileRef}
+          onChange={() => {
+            checkDisabled();
+          }}
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           required
-          onChange={(e) => setFile(e.target.value)}
         />
         <br />
         <br />
-        <button onClick={submitHandler} type="submit">
+        <button type="submit" disabled={loading}>
           {' '}
           TEST{' '}
         </button>
